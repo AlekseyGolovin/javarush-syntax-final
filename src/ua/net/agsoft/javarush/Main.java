@@ -4,6 +4,8 @@ import java.nio.file.Path;
 
 public class Main {
 
+    private static final String BAD_COMMAND = "BAD command. Possible options: ENCRYPT, DECRYPT or BRUTE_FORCE";
+
     public static void main(String[] args) {
 
         String command;
@@ -26,7 +28,7 @@ public class Main {
             case "ENCRYPT" -> encryptFile(filepath, key);
             case "DECRYPT" -> decryptFile(filepath, key);
             case "BRUTE_FORCE" -> bruteForceFile(filepath, key);
-            default -> System.out.println("BAD command. Possible options: ENCRYPT, DECRYPT or BRUTE_FORCE");
+            default -> System.out.println(BAD_COMMAND);
         }
     }
 
