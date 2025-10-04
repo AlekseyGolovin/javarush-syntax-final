@@ -10,20 +10,28 @@ public class Util {
         return Files.isRegularFile(filepath);
     }
 
-    protected static int tryToInt(String key) {
+    protected static int tryToInt(String str) {
         // TODO: попробовать преобразовать в int. если ошибка вернуть 0 иначе результат преобразования
+        if (str == null || str.isEmpty()) {
+            return 0;
+        }
         try {
-            return Integer.parseInt(text.trim());
-        } catch (NumberFormatException ex) {
+            int res = Integer.parseInt(str);
+            return res;
+        } catch (NumberFormatException e) {
             return 0;
         }
     }
 
-    protected static boolean isInt(String key) {
+    protected static boolean isInteger(String str) {
         // TODO: попробовать преобразовать в int. если ошибка вернуть false
+        if (str == null || str.isEmpty()) {
+            return false;
+        }
         try {
-            return true
-        } catch (NumberFormatException ex) {
+            Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException e) {
             return false;
         }
     }
