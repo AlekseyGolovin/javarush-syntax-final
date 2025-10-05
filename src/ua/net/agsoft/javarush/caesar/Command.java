@@ -1,4 +1,4 @@
-package ua.net.agsoft.javarush;
+package ua.net.agsoft.javarush.caesar;
 
 public enum Command {
 
@@ -25,5 +25,4 @@ public enum Command {
     public String toString() {
         return code;
     }
-
 }

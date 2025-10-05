@@ -3,16 +3,11 @@ package ua.net.agsoft.javarush.crypto;
 public class Crypto {
 
     private final char[] alphabet;
-    private int alphabetLength;
+    private final int alphabetLength;
     private int offset;
 
-    //--------------------------------------------------------------------------------
-    //                            *** constructor ***
-    //--------------------------------------------------------------------------------
-
     public Crypto() {
-        alphabet = CryptoAlphabetType.EN.getAlphabet();
-        alphabetLength = alphabet.length;
+        this(CryptoAlphabetType.EN_BASIC);
     }
 
     public Crypto(CryptoAlphabetType alphabetType) {
@@ -20,27 +15,14 @@ public class Crypto {
         alphabetLength = alphabet.length;
     }
 
-
-    //--------------------------------------------------------------------------------
-    //                              *** static ***
-    //--------------------------------------------------------------------------------
-
-
-    //--------------------------------------------------------------------------------
-    //                             *** non-static ***
-    //--------------------------------------------------------------------------------
-
+    private void nextOffset() {
+        setOffset(offset + 1);
+    }
 
     public void setOffset(int offset) {
         this.offset = offset;
-
-        if (this.offset  > alphabetLength)  this.offset = alphabetLength;
-
-        if (this.offset  < 0) this.offset  = 0;
-    }
-
-    public void nextOffset() {
-        setOffset(offset + 1);
+        if (offset  >= alphabetLength)  this.offset = alphabetLength;
+        if (offset  < 0) this.offset  = 0;
     }
 
     public boolean canSetNextOffset() {

@@ -1,5 +1,6 @@
-package ua.net.agsoft.javarush;
+package ua.net.agsoft.javarush.caesar;
 
+import ua.net.agsoft.javarush.crypto.CryptoAlphabetType;
 import ua.net.agsoft.javarush.util.Util;
 
 import java.nio.file.Path;
@@ -12,24 +13,12 @@ public class ProcessingOptions {
     private Path filePath;
     private String key;
     private int offset;
-
-
-    //--------------------------------------------------------------------------------
-    //                            *** constructor ***
-    //--------------------------------------------------------------------------------
+    private CryptoAlphabetType alphabetType;
 
     public ProcessingOptions() {
-        this.offset = 0;
+        offset = 0;
+        alphabetType = CryptoAlphabetType.EN_BASIC;
     }
-
-    //--------------------------------------------------------------------------------
-    //                              *** static ***
-    //--------------------------------------------------------------------------------
-
-
-    //--------------------------------------------------------------------------------
-    //                             *** non-static ***
-    //--------------------------------------------------------------------------------
 
     public Command getCommand() {
         return command;
@@ -41,6 +30,10 @@ public class ProcessingOptions {
 
     public Path getFilePath() {
         return filePath;
+    }
+
+    public CryptoAlphabetType getAlphabetType() {
+        return alphabetType;
     }
 
     public void setCommand(Command command) {
@@ -56,8 +49,39 @@ public class ProcessingOptions {
         offset = Util.tryToInt(key);
     }
 
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
+
+    public void setAlphabetType(CryptoAlphabetType alphabetType) {
+        this.alphabetType = alphabetType;
+    }
+
+    public void setAlphabetType(String alphabetTypeString) {
+        switch (alphabetTypeString){
+            case "EN_ADVANCED" :
+                setAlphabetType(CryptoAlphabetType.EN_ADVANCED);
+                break;
+            case "LATIN" :
+                setAlphabetType(CryptoAlphabetType.LATIN);
+                break;
+            case "CYRIL" :
+                setAlphabetType(CryptoAlphabetType.CYRIL);
+                break;
+            case "LATIN_MIX" :
+                setAlphabetType(CryptoAlphabetType.LATIN_MIX);
+                break;
+            case "CYRIL_MIX" :
+                setAlphabetType(CryptoAlphabetType.CYRIL_MIX);
+                break;
+            case "EN_BASIC" :
+            default :
+                setAlphabetType(CryptoAlphabetType.EN_BASIC);
+        }
+    }
+
     public String toString() {
-        return String.format("{%s \"%s\" %d}", command.toString(), filePath, offset);
+        return String.format("{%s \"%s\" %d %s}", command.toString(), filePath, offset, alphabetType);
     }
 
     private boolean isValidCommand() {
@@ -76,11 +100,9 @@ public class ProcessingOptions {
     public boolean isValidOptions() {
         if(!isValidCommand()) return false;
         if(!isValidFilePath()) return false;
-
         if ((command == Command.ENCRYPT || command == Command.DECRYPT) && !Util.isInteger(key)) {
             return false;
         }
-
         return true;
     }
 }
