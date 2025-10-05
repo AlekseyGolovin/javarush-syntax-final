@@ -33,4 +33,38 @@ public class Crypto {
             return false;
         }
     }
+
+    public char encrypt(char srcChar) {
+        int pos = -1;
+        for (int i = 0; i < alphabetLength; i++) {
+            char achar = alphabet[i];
+            if (achar == srcChar) {
+                pos = i;
+                break;
+            }
+        }
+        if (pos < 0) return srcChar;
+        pos += offset;
+        while (pos >= alphabetLength) {
+            pos -= alphabetLength;
+        }
+        return alphabet[pos];
+    }
+
+    public char decrypt(char srcChar) {
+        int pos = -1;
+        for (int i = 0; i < alphabetLength; i++) {
+            char achar = alphabet[i];
+            if (achar == srcChar) {
+                pos = i;
+                break;
+            }
+        }
+        if (pos < 0) return srcChar;
+        pos -= offset;
+        while (pos < 0) {
+            pos += alphabetLength;
+        }
+        return alphabet[pos];
+    }
 }

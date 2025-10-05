@@ -1,65 +1,39 @@
 package ua.net.agsoft.javarush.crypto;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class CryptoFile {
 
-    public static void encryptFile(Path filepath, Path resultFilePath, Crypto crypto) {
-
-        // TODO: реализовать алгоритм шифрования текста в документе
-
-        // Подключиться к двум файлам
-
-        // получить в буфер часть данных
-
-
-
-        // Отправить на криптование
-
-
-        // отправить буфер в результирующий файл
-
-
-
-
-
-
-
-
-
-
-
-
-
+    public static void encryptFile(Path srcFilePath, Path desFilePath, Crypto crypto) {
+        try (BufferedReader srcReader = Files.newBufferedReader(srcFilePath);
+             BufferedWriter desWriter = Files.newBufferedWriter(desFilePath)) {
+            int srcInt;
+            while ((srcInt = srcReader.read()) != -1) {
+                char srcChar = (char) srcInt;
+                char desChar = crypto.encrypt(srcChar);
+                desWriter.append(desChar);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public static void decryptFile(Path filepath, Path resultFilePath, Crypto crypto) {
-
-        // TODO: реализовать алгоритм расшифровки текста в документе
-
-        // Подклчиться к двум файлам
-
-        // получить в буфер часть данных
-
-
-
-        // Отправить на криптование
-
-
-        // отправить буфер в результирующий файл
-
-
-
-
-
-
-
-
-
-
-
-
-
+    public static void decryptFile(Path srcFilePath, Path desFilePath, Crypto crypto) {
+        try (BufferedReader srcReader = Files.newBufferedReader(srcFilePath);
+             BufferedWriter desWriter = Files.newBufferedWriter(desFilePath)) {
+            int srcInt;
+            while ((srcInt = srcReader.read()) != -1) {
+                char srcChar = (char) srcInt;
+                char desChar = crypto.decrypt(srcChar);
+                desWriter.append(desChar);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static int getCryptoOffset(Path filepath, Crypto crypto) {
