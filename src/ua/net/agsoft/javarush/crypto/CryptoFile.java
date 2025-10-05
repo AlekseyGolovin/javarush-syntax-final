@@ -5,6 +5,8 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Locale;
 
 public class CryptoFile {
 
@@ -36,31 +38,72 @@ public class CryptoFile {
         }
     }
 
-    public static int getCryptoOffset(Path filepath, Crypto crypto) {
+    public static int getCryptoOffset(Path srcFilePath, Crypto crypto) {
+
+        HashMap<Integer, Integer> offsetRate = new HashMap<>();
 
         crypto.setOffset(0);
-
-        // TODO: реализовать алгоритм подбора ключа для расшифровки текста
-        // TODO: !! ДЛя каждого смещения считать вероятность
-        // TODO: возможно выдать несколько вариантов ключей
-        // TODO: или сохранять какждый условноправильный текст
         do {
-            // Получить часть файла для для подбора.
-            // Выбрать смещение
-            // Результат передать в алгоритм расшифровки
-            //
+            int offset = crypto.getOffset();
+            int rate = getRate(srcFilePath, crypto);
 
+            System.out.println("getCryptoOffset[" + offset + "]: " + rate);
 
-        } while (!isValidText() && crypto.canSetNextOffset());
+            offsetRate.put(offset, rate);
+        } while (crypto.canSetNextOffset());
+
+        // TODO: Найти максимальный рейтинг и вернуть его смещение
+
 
         return 0;
     }
 
-    private static boolean isValidText() {
-        // TODO: Тут необходимо организовать поиск популярных слов в тексте. Если находит, то считать что текст валидный
-        // TODO: на гуглдиске топ 100 слов в языке. использовать их для анализа результата
-
-
-        return true;
+    private static int getRate(Path srcFilePath, Crypto crypto) {
+        char[] srcFragment = new char[512];
+        char[] desFragment = new char[512];
+        try (BufferedReader srcReader = Files.newBufferedReader(srcFilePath)) {
+            int bufLength = srcReader.read(srcFragment);
+            for (int i = 0; i < bufLength; i++) {
+                desFragment[i] = crypto.decrypt(srcFragment[i]);
+            }
+            String text = new String(desFragment, 0, bufLength);
+            return getRate(text);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
+
+    private static int getRate(String text) {
+        String regex = "[^\\p{L}\\s]";
+        String clearText = text.replaceAll(regex, " ").trim().toLowerCase();
+        String normalizedText = clearText.replaceAll("\\s+", " ");
+        int enRate = getEnRate(normalizedText);
+        int uaRate = getUaRate(normalizedText);
+        int ruRate = getRuRate(normalizedText);
+        return enRate + uaRate + ruRate;
+    }
+
+    private static int getEnRate(String text) {
+        return getRate(text, CommonWords.EN);
+    }
+
+    private static int getUaRate(String text) {
+        return getRate(text, CommonWords.UA);
+    }
+
+    private static int getRuRate(String text) {
+        return getRate(text, CommonWords.RU);
+    }
+
+    private static int getRate(String text, String[] commonWords) {
+
+        // TODO: перебрать каждое слово из массива. проверить вхождение его в текст.
+        // TODO: просуммировать все вхождения и вернуть результат
+
+
+        return 0;
+    }
+
+
 }

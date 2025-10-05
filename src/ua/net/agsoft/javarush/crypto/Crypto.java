@@ -15,14 +15,18 @@ public class Crypto {
         alphabetLength = alphabet.length;
     }
 
-    private void nextOffset() {
-        setOffset(offset + 1);
+    public int getOffset() {
+        return offset;
     }
 
     public void setOffset(int offset) {
         this.offset = offset;
         if (offset  >= alphabetLength)  this.offset = alphabetLength;
         if (offset  < 0) this.offset  = 0;
+    }
+
+    private void nextOffset() {
+        setOffset(offset + 1);
     }
 
     public boolean canSetNextOffset() {
