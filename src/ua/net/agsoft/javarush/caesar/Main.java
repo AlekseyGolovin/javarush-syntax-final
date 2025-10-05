@@ -14,9 +14,9 @@ public class Main {
     private static final String BAD_ARGUMENTS =
             "Please use the following command-line format:\n" +
             "command filePath [key] [alphabet]\n" +
-            "command - a required argument that specifies the action. [ENCRYPT | DECRYPT | BRUTE_FORCE]\n " +
+            "command - a required argument that specifies the action. [ENCRYPT | DECRYPT | BRUTE_FORCE]\n" +
             "filePath - a required argument representing the absolute path to the file.\n" +
-            "key - a required argument for the ENCRYPT and DECRYPT commands, integer — alphabetic offset." +
+            "key - a required argument for the ENCRYPT and DECRYPT commands, integer — alphabetic offset.\n" +
             "alphabet - a list of characters for encryption/decryption. " +
             "[EN_BASIC | EN_ADVANCED | LATIN | CYRIL | LATIN_MIX | CYRIL_MIX]\n" +
             "EN_BASIC - Basic Latin Alphabet. Only lowercase and uppercase Latin letters.\n" +
@@ -49,8 +49,8 @@ public class Main {
         if (args.length < 2 || args.length > 4) return false;
         po.setCommand(Command.fromCode(args[0]));
         po.setFilePath(Path.of(args[1]));
-        if (args.length == 3) po.setKey(args[2]);
-        if (args.length == 4) po.setAlphabetType(args[3]);
+        if (args.length >= 3) po.setKey(args[2]);
+        if (args.length >= 4) po.setAlphabetType(args[3]);
         System.out.println(po);
         return po.isValidOptions();
     }
