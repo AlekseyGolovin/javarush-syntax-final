@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
-import java.util.Locale;
 
 public class CryptoFile {
 
@@ -39,23 +38,30 @@ public class CryptoFile {
     }
 
     public static int getCryptoOffset(Path srcFilePath, Crypto crypto) {
-
         HashMap<Integer, Integer> offsetRate = new HashMap<>();
-
         crypto.setOffset(0);
         do {
             int offset = crypto.getOffset();
             int rate = getRate(srcFilePath, crypto);
-
-            System.out.println("getCryptoOffset[" + offset + "]: " + rate);
-
+            System.out.println("getCryptoOffset [" + offset + "]: " + rate);
             offsetRate.put(offset, rate);
         } while (crypto.canSetNextOffset());
+        return getCryptoOffsetFromMap(offsetRate);
+    }
 
-        // TODO: Найти максимальный рейтинг и вернуть его смещение
-
-
-        return 0;
+    public static int getCryptoOffsetFromMap(HashMap<Integer, Integer> offsetRate) {
+        int ratePos = 0;
+        int maxRate = 0;
+        for (var pair : offsetRate.entrySet()) {
+            Integer key = pair.getKey();
+            Integer value = pair.getValue();
+            if (value > maxRate) {
+                ratePos = key;
+                maxRate = value;
+            }
+        }
+        System.out.println("getCryptoOffset BEST: " + ratePos);
+        return ratePos;
     }
 
     private static int getRate(Path srcFilePath, Crypto crypto) {
@@ -79,9 +85,15 @@ public class CryptoFile {
         String clearText = text.replaceAll(regex, " ").trim().toLowerCase();
         String normalizedText = clearText.replaceAll("\\s+", " ");
         int enRate = getEnRate(normalizedText);
+        System.out.println("getRate EN: " + enRate);
         int uaRate = getUaRate(normalizedText);
+        System.out.println("getRate UA: " + uaRate);
         int ruRate = getRuRate(normalizedText);
-        return enRate + uaRate + ruRate;
+        System.out.println("getRate RU: " + ruRate);
+        int maxRate = enRate;
+        if (uaRate > maxRate) maxRate = uaRate;
+        if (ruRate > maxRate) maxRate = ruRate;
+        return maxRate;
     }
 
     private static int getEnRate(String text) {
@@ -97,13 +109,19 @@ public class CryptoFile {
     }
 
     private static int getRate(String text, String[] commonWords) {
-
-        // TODO: перебрать каждое слово из массива. проверить вхождение его в текст.
-        // TODO: просуммировать все вхождения и вернуть результат
-
-
-        return 0;
+        text = " " + text + " ";
+        int rate = 0;
+        for (String commonWord : commonWords) {
+            int wordLength = commonWord.length();
+            String word = " " + commonWord + " ";
+            int lastPos = text.indexOf(word);
+            if(lastPos == -1) continue;
+            rate++;
+            do {
+                lastPos = text.indexOf(word, lastPos + wordLength);
+                if (lastPos != -1) rate++;
+            } while (lastPos != -1);
+        }
+        return rate;
     }
-
-
 }

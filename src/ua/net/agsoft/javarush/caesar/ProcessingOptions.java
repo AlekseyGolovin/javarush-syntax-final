@@ -58,26 +58,15 @@ public class ProcessingOptions {
     }
 
     public void setAlphabetType(String alphabetTypeString) {
-        switch (alphabetTypeString){
-            case "EN_ADVANCED" :
-                setAlphabetType(CryptoAlphabetType.EN_ADVANCED);
-                break;
-            case "LATIN" :
-                setAlphabetType(CryptoAlphabetType.LATIN);
-                break;
-            case "CYRIL" :
-                setAlphabetType(CryptoAlphabetType.CYRIL);
-                break;
-            case "LATIN_MIX" :
-                setAlphabetType(CryptoAlphabetType.LATIN_MIX);
-                break;
-            case "CYRIL_MIX" :
-                setAlphabetType(CryptoAlphabetType.CYRIL_MIX);
-                break;
-            case "EN_BASIC" :
-            default :
-                setAlphabetType(CryptoAlphabetType.EN_BASIC);
-        }
+        CryptoAlphabetType cryptoAlphabetType = switch (alphabetTypeString){
+            case "EN_ADVANCED" -> CryptoAlphabetType.EN_ADVANCED;
+            case "LATIN" -> CryptoAlphabetType.LATIN;
+            case "CYRIL" -> CryptoAlphabetType.CYRIL;
+            case "LATIN_MIX" -> CryptoAlphabetType.LATIN_MIX;
+            case "CYRIL_MIX" -> CryptoAlphabetType.CYRIL_MIX;
+            default -> CryptoAlphabetType.EN_BASIC;
+        };
+        setAlphabetType(cryptoAlphabetType);
     }
 
     public String toString() {
