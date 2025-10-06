@@ -39,20 +39,20 @@ public class Crypto {
     }
 
     public char encrypt(char srcChar) {
-        int pos = -1;
+        int charPosition = -1;
         for (int i = 0; i < alphabetLength; i++) {
             char achar = alphabet[i];
             if (achar == srcChar) {
-                pos = i;
+                charPosition = i;
                 break;
             }
         }
-        if (pos < 0) return srcChar;
-        pos += offset;
-        while (pos >= alphabetLength) {
-            pos -= alphabetLength;
+        if (charPosition < 0) return srcChar;
+        charPosition += offset;
+        while (charPosition >= alphabetLength) {
+            charPosition -= alphabetLength;
         }
-        return alphabet[pos];
+        return alphabet[charPosition];
     }
 
     public char decrypt(char srcChar) {

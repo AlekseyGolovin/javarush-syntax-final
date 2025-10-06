@@ -1,11 +1,16 @@
 package ua.net.agsoft.javarush.crypto;
 
+import ua.net.agsoft.javarush.util.Util;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 
 public class CryptoFile {
 
@@ -37,12 +42,12 @@ public class CryptoFile {
         }
     }
 
-    public static int getCryptoOffset(Path srcFilePath, Crypto crypto) {
+    public static int getCryptoOffset(Path srcFilePath, Crypto crypto, String[] keyWords) {
         HashMap<Integer, Integer> offsetRate = new HashMap<>();
         crypto.setOffset(0);
         do {
             int offset = crypto.getOffset();
-            int rate = getRate(srcFilePath, crypto);
+            int rate = getRate(srcFilePath, crypto, keyWords);
             System.out.println("getCryptoOffset [" + offset + "]: " + rate);
             offsetRate.put(offset, rate);
         } while (crypto.canSetNextOffset());
@@ -64,7 +69,7 @@ public class CryptoFile {
         return ratePos;
     }
 
-    private static int getRate(Path srcFilePath, Crypto crypto) {
+    private static int getRate(Path srcFilePath, Crypto crypto, String[] keyWords) {
         char[] srcFragment = new char[512];
         char[] desFragment = new char[512];
         try (BufferedReader srcReader = Files.newBufferedReader(srcFilePath)) {
@@ -73,7 +78,7 @@ public class CryptoFile {
                 desFragment[i] = crypto.decrypt(srcFragment[i]);
             }
             String text = new String(desFragment, 0, bufLength);
-            return getRate(text);
+            return getRate(text, keyWords);
         } catch (IOException e) {
             e.printStackTrace();
             return 0;
@@ -81,14 +86,12 @@ public class CryptoFile {
     }
 
     private static int getRate(String text) {
-        String regex = "[^\\p{L}\\s]";
-        String clearText = text.replaceAll(regex, " ").trim().toLowerCase();
-        String normalizedText = clearText.replaceAll("\\s+", " ");
-        int enRate = getEnRate(normalizedText);
+        String textForAnalysis = Util.prepareTextForAnalysis(text);
+        int enRate = getEnRate(textForAnalysis);
         System.out.println("getRate EN: " + enRate);
-        int uaRate = getUaRate(normalizedText);
+        int uaRate = getUaRate(textForAnalysis);
         System.out.println("getRate UA: " + uaRate);
-        int ruRate = getRuRate(normalizedText);
+        int ruRate = getRuRate(textForAnalysis);
         System.out.println("getRate RU: " + ruRate);
         int maxRate = enRate;
         if (uaRate > maxRate) maxRate = uaRate;
@@ -109,6 +112,7 @@ public class CryptoFile {
     }
 
     private static int getRate(String text, String[] commonWords) {
+        if (commonWords == null) return getRate(text);
         text = " " + text + " ";
         int rate = 0;
         for (String commonWord : commonWords) {
@@ -123,5 +127,20 @@ public class CryptoFile {
             } while (lastPos != -1);
         }
         return rate;
+    }
+
+    public static String[] getKeyWords(Path filePath) {
+        HashSet<String> keyWordSet = new HashSet<>();
+        try {
+            List<String> lines = Files.readAllLines(filePath);
+            for (String line : lines) {
+                String lineForAnalysis = Util.prepareTextForAnalysis(line);
+                String[] keyWords = lineForAnalysis.split(" ");
+                Collections.addAll(keyWordSet, keyWords);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return (String[])keyWordSet.toArray();
     }
 }

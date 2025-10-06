@@ -27,4 +27,10 @@ public class Util {
             return false;
         }
     }
+
+    public static String prepareTextForAnalysis(String line) {
+        String regex = "[^\\p{L}\\s]";
+        String clearLine = line.replaceAll(regex, " ").trim().toLowerCase();
+        return clearLine.replaceAll("\\s+", " ");
+    }
 }
