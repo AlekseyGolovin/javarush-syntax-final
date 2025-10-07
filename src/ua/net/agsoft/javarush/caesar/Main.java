@@ -1,11 +1,5 @@
 package ua.net.agsoft.javarush.caesar;
 
-import ua.net.agsoft.javarush.crypto.Crypto;
-import ua.net.agsoft.javarush.crypto.CryptoAlphabetType;
-import ua.net.agsoft.javarush.crypto.CryptoFile;
-
-import java.nio.file.Path;
-
 public class Main {
 
     public static void main(String[] args) {

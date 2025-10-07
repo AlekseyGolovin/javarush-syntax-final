@@ -110,7 +110,7 @@ public class RunSettings {
         }
     }
 
-    public boolean isValidOptions() {
+    public boolean isValid() {
         if (!isValidCommand()) return false;
         if (!isValidFilePath()) return false;
         if ((command == Command.ENCRYPT || command == Command.DECRYPT) && !Util.isInteger(key)) {

@@ -13,7 +13,7 @@ public enum Command {
         this.code = code;
     }
 
-    public static Command fromCode(String code) {
+    public static Command of(String code) {
         for (Command command : Command.values()) {
             if (command.code.equals(code)) {
                 return command;
